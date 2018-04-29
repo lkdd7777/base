@@ -46,14 +46,14 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Integer>
 	}
 
 	@Override
-	@Cacheable(value = "resourceCache", key = "'tree' + #roleId")
+//	@Cacheable(value = "resourceCache", key = "'tree' + #roleId")
 	public List<ZtreeView> tree(int roleId) {
 		List<ZtreeView> resulTreeNodes = new ArrayList<ZtreeView>();
 		Role role = roleService.find(roleId);
 		Set<Resource> roleResources = role.getResources();
-		resulTreeNodes.add(new ZtreeView(0L, null, "系统菜单", true));
+//		resulTreeNodes.add(new ZtreeView(0L, null, "系统菜单", true));
 		ZtreeView node;
-		Sort sort = new Sort(Direction.ASC, "parent", "id", "sort");
+		Sort sort = new Sort(Direction.ASC, "parent", "sort");
 		List<Resource> all = resourceDao.findAll(sort);
 		for (Resource resource : all) {
 			node = new ZtreeView();
@@ -71,6 +71,8 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Integer>
 		}
 		return resulTreeNodes;
 	}
+
+
 
 	@Override
 	@CacheEvict(value = "resourceCache")
@@ -103,5 +105,34 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Integer>
 		resourceDao.deleteGrant(id);
 		super.delete(id);
 	}
-	
+
+	@Override
+	@Cacheable(value = "resourceCache")
+	public List<Resource> parent() {
+//		List<Resource> result = new ArrayList<Resource>();
+//		Resource root = new Resource();
+//		root.setId(0);
+//		root.setName("系统菜单");
+//		root.setLevel(0);
+//		result.add(root);
+
+		List<Resource> resourceList = this.resourceDao.findByLevel();
+//		result.addAll(resourceList);
+		return resourceList;
+	}
+
+	@Override
+	public List<Resource> findMenu(Integer level) {
+		return this.resourceDao.findMenu(level);
+	}
+
+	@Override
+	public List<Resource> findByParentId(Integer parentId) {
+		return this.resourceDao.findByParentId(parentId);
+	}
+
+	@Override
+	public List<Resource> findByParentIdAndRoleIds(Integer parentId, List<Integer> roleIds) {
+		return this.resourceDao.findByParentIdAndRoleIds(parentId,roleIds);
+	}
 }

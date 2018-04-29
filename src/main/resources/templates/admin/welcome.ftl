@@ -5,6 +5,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	welcome to
+	欢迎使用
 </body>
 </html>

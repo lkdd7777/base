@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title> - 表单验证 jQuery Validation</title>
+    <title>文件管理</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -30,16 +30,16 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">文号：</label>
                             <div class="col-sm-8">
-                                <input id="number" name="number" readonly="readonly" class="laydate-icon form-control layer-date" value="${bean.number}">
+                                <input id="number" name="number" class="form-control" value="${bean.description}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">等级：</label>
                             <div class="col-sm-8">
                                 <select name="level" class="form-control">
-                                    <option value="0" <#if bean.level == 0>selected="selected"</#if>>普通</option>
-                                    <option value="1" <#if bean.level == 1>selected="selected"</#if>>重要</option>
-                                    <option value="2" <#if bean.level == 2>selected="selected"</#if>>非常重要</option>
+                                    <option value="0" <#if bean.level == 1>selected="selected"</#if>>普通</option>
+                                    <option value="1" <#if bean.level == 2>selected="selected"</#if>>重要</option>
+                                    <option value="2" <#if bean.level == 3>selected="selected"</#if>>非常重要</option>
                                 </select>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">发布时间：</label>
                             <div class="col-sm-8">
-                                <input id="pushDate" name="pushDate" class="form-control" value="${bean.pushDate}">
+                                <input id="pushTime" name="pushTime" readonly="readonly" class="laydate-icon form-control layer-date" value="${bean.pushTime}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -96,13 +96,40 @@
 <script src="${ctx!}/assets/js/jquery.form.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        laydate({
+            elem: '#pushTime', //目标元素。由于laydate.js封装了一个轻量级的选择器引擎，因此elem还允许你传入class、tag但必须按照这种方式 '#id .class'
+            event: 'focus' //响应事件。如果没有传入event，则按照默认的click
+        });
+
         $("#frm").validate({
-                rules:{
+            rules: {
+                number: {
+                    required: true
+                },
+                level: {
+                    required: true
+                },
                 description: {
-                required: true,
-                maxlength: 40
-            }
-        },
+                    required: true
+                },
+                pushTime: {
+                    date: true,
+                    required: true
+                },
+                telephone: {
+                    required: true
+                },
+                email: {
+                    email: true,
+                    required: true
+                },
+                remark: {
+                    required: true
+                },
+                file: {
+                    required: true
+                }
+            },
         messages: {},
         submitHandler:function(form){
             var options = {

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>文件列表</title>
+    <title>文件管理</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -28,7 +28,7 @@
         <div class="col-sm-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h5>文件管理</h5>
+                    <h5>列表</h5>
                 </div>
                 <div class="ibox-content">
                     <p>
@@ -120,10 +120,15 @@
                 field: "number"
             },{
                 title: "等级",
-                field: "level"
-            },{
-                title: "描述",
-                field: "description",
+                field: "level",
+                formatter: function (value, row, index) {
+                    if (value == 1)
+                        return '<span class="badge badge-primary">普通</span>';
+                    else if(value == 2)
+                        return '<span class="badge badge-warning">重要</span>';
+                    else if(value == 3)
+                        return '<span class="badge label-danger">非常重要</span>';
+                }
             },{
                 title: "发布时间",
                 field: "pushTime",
@@ -137,7 +142,7 @@
                 title: "预览",
                 field: "route",
                 formatter: function(value, row, index) {
-                    return "<a href='${ctx!}/"+value+"'>查看</a>";
+                    return "<a href='${ctx!}/"+value+"' target = '_blank'>查看</a>";
                 }
             },{
                 title: "创建人",
@@ -153,8 +158,8 @@
                 title: "操作",
                 field: "empty",
                 formatter: function (value, row, index) {
-                    var operateHtml = '<@shiro.hasPermission name="system:user:edit"><button class="btn btn-primary btn-xs" type="button" onclick="download(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;下载</button> &nbsp;</@shiro.hasPermission>';
-                    operateHtml = operateHtml + '<@shiro.hasPermission name="system:user:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-remove"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
+                    var operateHtml = '<@shiro.hasPermission name="web:file:download"><button class="btn btn-primary btn-xs" type="button" onclick="download(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;下载</button> &nbsp;</@shiro.hasPermission>';
+                    operateHtml = operateHtml + '<@shiro.hasPermission name="web:file:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-remove"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
             }]
@@ -162,7 +167,7 @@
     });
 
     function download(id){
-        var url = '${ctx!}/download/'+id;
+        var url = '${ctx!}/file/download/'+id;
         window.open(url);
     }
     function add(){

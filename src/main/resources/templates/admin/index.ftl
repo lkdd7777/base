@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 
-    <title> SPPanAdmin- 主页</title>
+    <title> 文件系统- 主页</title>
 
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -36,12 +36,12 @@
                                 <span class="clear">
                                     <span class="block m-t-xs" style="font-size:20px;">
                                         <i class="fa fa-area-chart"></i>
-                                        <strong class="font-bold">SPPanAdmin</strong>
+                                        <strong class="font-bold">文件系统</strong>
                                     </span>
                                 </span>
                             </a>
                         </div>
-                        <div class="logo-element">SPPanAdmin
+                        <div class="logo-element">SYSTEM
                         </div>
                     </li>
                     <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
@@ -53,36 +53,63 @@
                             <span class="nav-label">主页</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa fa-cog"></i>
-                            <span class="nav-label">系统管理</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                         <@shiro.hasPermission name="system:user:index">
+                    <#list result as bean>
+                        <@shiro.hasPermission name="${bean.sourceKey}">
                             <li>
-                               <a class="J_menuItem" href="${ctx!}/admin/user/index">用户管理</a>
+                                 <a href="#">
+                                     <span class="nav-label">${bean.name}</span>
+                                     <span class="fa arrow"></span>
+                                 </a>
+                            <#if bean.child?? && (bean.child?size > 0) >
+                                <ul class="nav nav-second-level">
+                                    <#list bean.child as c>
+                                        <@shiro.hasPermission name="${c.sourceKey}">
+                                         <li>
+                                             <a class="J_menuItem" href="${ctx!}${c.sourceUrl}">${c.name}</a>
+                                         </li>
+                                        </@shiro.hasPermission>
+                                    </#list>
+
+                                </ul>
+                            </#if>
                             </li>
-                         </@shiro.hasPermission>
-                         <@shiro.hasPermission name="system:role:index">
-                            <li>
-                                <a class="J_menuItem" href="${ctx!}/admin/role/index">角色管理</a>
-                            </li>
-                         </@shiro.hasPermission>
-                         <@shiro.hasPermission name="system:resource:index">
-                            <li>
-                                <a class="J_menuItem" href="${ctx!}/admin/resource/index">资源管理</a>
-                            </li>
-                         </@shiro.hasPermission>
-                        <@shiro.hasPermission name="web:file:index">
-                        <li>
-                            <a class="J_menuItem" href="${ctx!}/file/index">文件管理</a>
-                        </li>
                         </@shiro.hasPermission>
-                        </ul>
-                    </li>
-                    <li class="line dk"></li>
+                    </#list>
+                    <#--<@shiro.hasPermission name="system">-->
+                    <#--<li>-->
+                        <#--<a href="#">-->
+                            <#--<i class="fa fa fa-cog"></i>-->
+                            <#--<span class="nav-label">系统管理</span>-->
+                            <#--<span class="fa arrow"></span>-->
+                        <#--</a>-->
+                        <#--<ul class="nav nav-second-level">-->
+                         <#--<@shiro.hasPermission name="system:user:index">-->
+                            <#--<li>-->
+                               <#--<a class="J_menuItem" href="${ctx!}/admin/user/index">用户管理</a>-->
+                            <#--</li>-->
+                         <#--</@shiro.hasPermission>-->
+                         <#--<@shiro.hasPermission name="system:role:index">-->
+                            <#--<li>-->
+                                <#--<a class="J_menuItem" href="${ctx!}/admin/role/index">角色管理</a>-->
+                            <#--</li>-->
+                         <#--</@shiro.hasPermission>-->
+                         <#--<@shiro.hasPermission name="system:resource:index">-->
+                            <#--<li>-->
+                                <#--<a class="J_menuItem" href="${ctx!}/admin/resource/index">资源管理</a>-->
+                            <#--</li>-->
+                         <#--</@shiro.hasPermission>-->
+                        <#--</ul>-->
+                    <#--</li>-->
+                    <#--</@shiro.hasPermission>-->
+                    <#--<@shiro.hasPermission name="web:file:index">-->
+                    <#--<li>-->
+                        <#--<a class="J_menuItem" href="${ctx!}/file/index">-->
+                            <#--<i class="fa fa-desktop"></i>-->
+                            <#--<span class="nav-label">文件管理</span>-->
+                        <#--</a>-->
+                    <#--</li>-->
+                    <#--</@shiro.hasPermission>-->
+                    <#--<li class="line dk"></li>-->
                 </ul>
             </div>
         </nav>

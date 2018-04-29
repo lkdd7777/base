@@ -61,6 +61,8 @@ public class ShiroConfig {
 //		filterChainDefinitionMap.put("/upload/**", "anon");
 		//用户登录
 		filterChainDefinitionMap.put("/admin/login", "anon");
+
+//		filterChainDefinitionMap.put("#", "perms[system]");
 		//用户管理
 		filterChainDefinitionMap.put("/admin/user/index", "perms[system:user:index]");
 		filterChainDefinitionMap.put("/admin/user/add", "perms[system:user:add]");
@@ -86,7 +88,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/file/add", "perms[web:file:add]");
 		filterChainDefinitionMap.put("/file/edit*", "perms[web:file:edit]");
 		filterChainDefinitionMap.put("/file/deleteBatch", "perms[web:file:deleteBatch]");
-		filterChainDefinitionMap.put("/file/download", "perms[web:file:download]");
+		filterChainDefinitionMap.put("/file/download*", "perms[web:file:download]");
 		shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilter;
 	}

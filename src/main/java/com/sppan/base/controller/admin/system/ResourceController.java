@@ -37,7 +37,7 @@ public class ResourceController extends BaseController {
 		List<ZtreeView> list = resourceService.tree(resourceId);
 		return list;
 	}
-	
+
 	@RequestMapping("/index")
 	public String index() {
 		return "admin/resource/index";
@@ -57,7 +57,7 @@ public class ResourceController extends BaseController {
 	
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(ModelMap map) {
-		List<Resource> list = resourceService.findAll();
+		List<Resource> list = resourceService.parent();
 		map.put("list", list);
 		return "admin/resource/form";
 	}
@@ -68,7 +68,7 @@ public class ResourceController extends BaseController {
 		Resource resource = resourceService.find(id);
 		map.put("resource", resource);
 		
-		List<Resource> list = resourceService.findAll();
+		List<Resource> list = resourceService.parent();
 		map.put("list", list);
 		return "admin/resource/form";
 	}

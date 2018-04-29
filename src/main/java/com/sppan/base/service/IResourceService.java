@@ -24,9 +24,30 @@ public interface IResourceService extends IBaseService<Resource, Integer> {
 	List<ZtreeView> tree(int roleId);
 
 	/**
+	 * 获取全部
+	 * @return
+	 */
+	List<Resource> parent();
+
+	/**
 	 * 修改或者新增资源
 	 * @param resource
 	 */
 	void saveOrUpdate(Resource resource);
+
+	/**
+	 * 查询目录
+	 * @return
+	 */
+	List<Resource> findMenu(Integer level);
+
+	/**
+	 * 查询菜单
+	 * @param parentId
+	 * @return
+	 */
+	List<Resource> findByParentId(Integer parentId);
+
+	List<Resource> findByParentIdAndRoleIds(Integer parentId,List<Integer> roleIds);
 
 }

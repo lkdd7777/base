@@ -30,13 +30,14 @@
                     <div class="ibox-content">
                         <form class="form-horizontal m-t" id="frm" method="post" action="${ctx!}/admin/resource/edit">
                         	<input type="hidden" id="id" name="id" value="${resource.id}">
+                            <input type="hidden" id="parentId" name="parentId" value="${resource.id}">
                             <div class="form-group">
                                <label class="col-sm-3 control-label">上级资源：</label>
                                 <div class="col-sm-8">
                                 	<select name="parent.id" class="form-control">
                                 		<#list list as r>
                                 			<option value="${r.id}" <#if resource.parent.id == r.id>selected="selected"</#if>>
-                                				<#if r.level == 1>|-<#elseif  r.level == 2>　|-<#else>　　|-</#if>${r.name}
+                                				<#if r.level == 0>|-<#elseif  r.level == 1>　|-<#elseif  r.level == 2>  　|-<#else>  　　|-</#if>${r.name}
                                 			</option>
                                 		</#list>
                                 	</select>
