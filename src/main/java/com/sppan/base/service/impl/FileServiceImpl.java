@@ -25,18 +25,7 @@ public class FileServiceImpl extends BaseServiceImpl<File,Integer> implements IF
 
     @Override
     public void saveOrUpdate(File file) {
-        if(file.getId() != null){
-            File dbFile = find(file.getId());
-            dbFile.setDeleteStatus(file.getDeleteStatus());
-            dbFile.setDescription(file.getDescription());
-
-            update(dbFile);
-        }else{
-            file.setCreateTime(new Date());
-            file.setDeleteStatus(0);
-
-            save(file);
-        }
+        save(file);
     }
 
 }

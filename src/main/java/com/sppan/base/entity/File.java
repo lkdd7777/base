@@ -51,7 +51,7 @@ public class File extends BaseEntity{
     /**
      * 发布时间
      */
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd")
     private Date pushTime;
 
     /**

@@ -136,24 +136,20 @@
                 title: "上传时间",
                 field: "createTime",
             },{
-                title: "备注",
-                field: "remark",
+                title: "上传人",
+                field: "user",
+                formatter: function(value, row, index) {
+                    return value.nickName;;
+                }
+            },{
+                title: "描述",
+                field: "description",
             },{
                 title: "预览",
                 field: "route",
                 formatter: function(value, row, index) {
                     return "<a href='${ctx!}/"+value+"' target = '_blank'>查看</a>";
                 }
-            },{
-                title: "创建人",
-                field: "user",
-                formatter: function(value, row, index) {
-                    return value.nickName;;
-                }
-            },{
-                title: "创建时间",
-                field: "createTime",
-                sortable: true
             },{
                 title: "操作",
                 field: "empty",
@@ -201,7 +197,7 @@
 
     function detailFormatter(index, row) {
         var html = [];
-        html.push('<p><b>描述:</b> ' + row.description + '</p>');
+        html.push('<p><b>备注:</b> ' + row.remark + '</p>');
         return html.join('');
     }
 </script>
