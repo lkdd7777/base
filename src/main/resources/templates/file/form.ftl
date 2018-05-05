@@ -37,9 +37,9 @@
                             <label class="col-sm-3 control-label">等级：</label>
                             <div class="col-sm-8">
                                 <select name="level" class="form-control">
-                                    <option value="0" <#if bean.level == 1>selected="selected"</#if>>普通</option>
-                                    <option value="1" <#if bean.level == 2>selected="selected"</#if>>重要</option>
-                                    <option value="2" <#if bean.level == 3>selected="selected"</#if>>非常重要</option>
+                                    <option value="1" <#if bean.level == 1>selected="selected"</#if>>普通</option>
+                                    <option value="2" <#if bean.level == 2>selected="selected"</#if>>重要</option>
+                                    <option value="3" <#if bean.level == 3>selected="selected"</#if>>非常重要</option>
                                 </select>
                             </div>
                         </div>

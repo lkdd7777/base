@@ -20,6 +20,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URLEncoder;
 
 @Controller
 @RequestMapping("/file")
@@ -100,35 +104,76 @@ public class FileController extends BaseController {
     }
 
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
-    public void download(@PathVariable("id")Integer id) {
+    public void download(@PathVariable("id")Integer id)throws FileNotFoundException {
         File file = this.fileService.find(id);
-        String filename = file.getName() + file.getSuffix();
-        response.setHeader("content-type", "application/octet-stream");
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
-        byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
-        OutputStream os = null;
-        try {
-            os = response.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(new java.io.File(uploadPath.getPath() + file.getRoute())));
-            int i = bis.read(buff);
-            while (i != -1) {
-                os.write(buff, 0, buff.length);
-                os.flush();
-                i = bis.read(buff);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bis != null) {
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        String fileName = file.getName() + file.getSuffix();
+
+        // 下载本地文件
+        String filePath = uploadPath.getPath() + file.getRoute();
+        InputStream in = null;
+        try{
+            //1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
+            response.setContentType("multipart/form-data");
+            //2.设置文件头：最后一个参数是设置下载文件名
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(fileName, "UTF-8"));
+
+            java.io.File file1 = new java.io.File(filePath);
+
+            in = new FileInputStream(file1);
+
+            //3.通过response获取ServletOutputStream对象(out)
+            int b = 0;
+            byte[] buffer = new byte[512];
+            while (b != -1){
+                b = in.read(buffer);
+                if(b != -1){
+                    response.getOutputStream().write(buffer,0,b);//4.写到输出流(out)中
                 }
+
+            }
+        } catch (Exception e) {
+        }finally{
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                response.getOutputStream().flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        System.out.println("success");
     }
+
+//    @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
+//    public void download(@PathVariable("id")Integer id) {
+//        File file = this.fileService.find(id);
+//        String filename = file.getName() + file.getSuffix();
+//        response.setHeader("content-type", "application/octet-stream");
+//        response.setContentType("application/octet-stream");
+//        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+//        byte[] buff = new byte[1024];
+//        BufferedInputStream bis = null;
+//        OutputStream os = null;
+//        try {
+//            os = response.getOutputStream();
+//            bis = new BufferedInputStream(new FileInputStream(new java.io.File(uploadPath.getPath() + file.getRoute())));
+//            int i = bis.read(buff);
+//            while (i != -1) {
+//                os.write(buff, 0, buff.length);
+//                os.flush();
+//                i = bis.read(buff);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (bis != null) {
+//                try {
+//                    bis.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        System.out.println("success");
+//    }
 }
