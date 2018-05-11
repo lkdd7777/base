@@ -37,8 +37,7 @@ public class JsonResult implements Serializable {
 	
 	/**
 	 * 处理成功
-	 * 
-	 * @param message
+	 *
 	 *            消息
 	 * @return data
 	 */

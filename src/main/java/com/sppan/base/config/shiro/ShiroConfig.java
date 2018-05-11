@@ -80,6 +80,12 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/admin/resource/add", "perms[system:resource:add]");
 		filterChainDefinitionMap.put("/admin/resource/edit*", "perms[system:resource:edit]");
 		filterChainDefinitionMap.put("/admin/resource/deleteBatch", "perms[system:resource:deleteBatch]");
+
+		//部门管理
+		filterChainDefinitionMap.put("/admin/dept/index", "perms[system:dept:index]");
+		filterChainDefinitionMap.put("/admin/dept/add", "perms[system:dept:add]");
+		filterChainDefinitionMap.put("/admin/dept/edit*", "perms[system:dept:edit]");
+		filterChainDefinitionMap.put("/admin/dept/deleteBatch", "perms[system:dept:deleteBatch]");
 		
 		filterChainDefinitionMap.put("/admin/**", "authc");
 
