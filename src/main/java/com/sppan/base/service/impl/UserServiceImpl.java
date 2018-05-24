@@ -103,7 +103,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements I
 	public void grantDept(Integer id, Integer deptId) {
 		User user = find(id);
 		Assert.notNull(user, "用户不存在");
-		Assert.state(!"superadmin".equals(user.getUserName()),"超级管理员用户不能修改部门");
+		Assert.state(!"superadmin".equals(user.getUserName()),"超级管理员用户不能关联部门");
 		Dept dept = deptService.find(deptId);
 
 		user.setDept(dept);
