@@ -7,8 +7,10 @@ import java.util.Set;
 import com.sppan.base.common.utils.MD5Utils;
 import com.sppan.base.dao.IUserDao;
 import com.sppan.base.dao.support.IBaseDao;
+import com.sppan.base.entity.Dept;
 import com.sppan.base.entity.Role;
 import com.sppan.base.entity.User;
+import com.sppan.base.service.IDeptService;
 import com.sppan.base.service.IRoleService;
 import com.sppan.base.service.IUserService;
 import com.sppan.base.service.support.impl.BaseServiceImpl;
@@ -33,6 +35,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements I
 	
 	@Autowired
 	private IRoleService roleService;
+
+	@Autowired
+	private IDeptService deptService;
 	
 	@Override
 	public IBaseDao<User, Integer> getBaseDao() {
@@ -72,7 +77,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements I
 	@Override
 	public void delete(Integer id) {
 		User user = find(id);
-		Assert.state(!"admin".equals(user.getUserName()),"超级管理员用户不能删除");
+		Assert.state(!"superadmin".equals(user.getUserName()),"超级管理员用户不能删除");
 		super.delete(id);
 	}
 
@@ -80,7 +85,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements I
 	public void grant(Integer id, String[] roleIds) {
 		User user = find(id);
 		Assert.notNull(user, "用户不存在");
-		Assert.state(!"admin".equals(user.getUserName()),"超级管理员用户不能修改管理角色");
+		Assert.state(!"superadmin".equals(user.getUserName()),"超级管理员用户不能修改管理角色");
 		Role role;
 		Set<Role> roles = new HashSet<Role>();
 		if(roleIds != null){
@@ -93,5 +98,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, Integer> implements I
 		user.setRoles(roles);
 		update(user);
 	}
-	
+
+	@Override
+	public void grantDept(Integer id, Integer deptId) {
+		User user = find(id);
+		Assert.notNull(user, "用户不存在");
+		Assert.state(!"superadmin".equals(user.getUserName()),"超级管理员用户不能修改部门");
+		Dept dept = deptService.find(deptId);
+
+		user.setDept(dept);
+		update(user);
+	}
 }

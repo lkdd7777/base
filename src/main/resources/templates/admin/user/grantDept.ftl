@@ -24,38 +24,35 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <p>为【${user.nickName}】分配部门</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>完整验证表单</h5>
+                        <h5>选择部门</h5>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="frm" method="post" action="${ctx!}/admin/role/edit">
-                        	<input type="hidden" id="id" name="id" value="${role.id}">
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">角色key：</label>
-                                <div class="col-sm-8">
-                                    <input id="roleKey" name="roleKey" class="form-control" type="text" value="${role.roleKey}" <#if role?exists> readonly="readonly"</#if> >
+                        <form class="form-horizontal" id="frm" method="post" action="${ctx!}/admin/user/save">
+                        	<input type="hidden" id="id" name="id" value="${user.id}">
+                        	<div class="form-group">
+                        		<#list depts as dept>
+                                <div class="col-sm-12">
+                                    <div class="checkbox i-checks">
+                                        <label>
+                                        	<#if deptId == dept.id>
+                                            	<input type="radio" value="${dept.id}" name="deptId" checked="checked"> <i></i> ${dept.name}
+                                            <#else>
+                                            	<input type="radio" value="${dept.id}" name="deptId"> <i></i> ${dept.name}
+                                            </#if>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">角色名称：</label>
-                                <div class="col-sm-8">
-                                    <input id="name" name="name" class="form-control" type="text" value="${role.name}">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">状态：</label>
-                                <div class="col-sm-8">
-                                	<select name="status" class="form-control">
-                                		<option value="0" <#if role.status == 0>selected="selected"</#if>>正常</option>
-                                		<option value="1" <#if role.status == 1>selected="selected"</#if>>禁用</option>
-                                	</select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">描述：</label>
-                                <div class="col-sm-8">
-                                    <input id="description" name="description" class="form-control" value="${role.description}">
-                                </div>
+                                </#list>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-8 col-sm-offset-3">
@@ -86,31 +83,13 @@
     <script type="text/javascript">
     $(document).ready(function () {
 	    $("#frm").validate({
-    	    rules: {
-    	    	roleKey: {
-    	        required: true,
-    	        minlength: 2,
-    	    	maxlength: 30
-    	      },
-    	        name: {
-    	        required: true,
-    	        minlength: 2,
-    	    	maxlength: 30
-    	      },
-    	        status: {
-    	        required: true
-    	      },
-    	      	description: {
-    	        required: true,
-    	        maxlength: 40
-    	      }
-    	    },
+    	    rules: {},
     	    messages: {},
     	    submitHandler:function(form){
     	    	$.ajax({
    	    		   type: "POST",
    	    		   dataType: "json",
-   	    		   url: "${ctx!}/admin/role/edit",
+   	    		   url: "${ctx!}/admin/user/grantDept/" + ${user.id},
    	    		   data: $(form).serialize(),
    	    		   success: function(msg){
 	   	    			layer.msg(msg.message, {time: 2000},function(){

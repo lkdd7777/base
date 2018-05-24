@@ -35,4 +35,11 @@ public interface IUserService extends IBaseService<User, Integer> {
 	 */
 	void grant(Integer id, String[] roleIds);
 
+	/**
+	 * 给用户分配部门
+	 * @param id
+	 * @param deptId
+	 */
+	void grantDept(Integer id,Integer deptId);
+
 }

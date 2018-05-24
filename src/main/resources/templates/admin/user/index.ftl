@@ -128,6 +128,17 @@
                     	});
                     	return r;
                     }
+                },{
+                    title: "所属部门",
+                    field: "dept",
+                    formatter: function(value, row, index) {
+                        var r = "";
+                        if(value != null){
+                           r = r + "【" + value.name + "】";
+                        }
+
+                        return r;
+                    }
 			    },{
 			        title: "昵称",
 			        field: "nickName"
@@ -148,15 +159,15 @@
 			    },{
 			        title: "邮箱",
 			        field: "email"
-			    },{
-			        title: "状态",
-			        sortable: true,
-			        field: "deleteStatus",
-                    formatter: function (value, row, index) {
-                        if (value == '0') 
-                        	return '<span class="label label-info">未删除</span>';
-                        return '<span class="label label-danger">已删除</span>';
-                    }
+			    // },{
+			    //     title: "状态",
+			    //     sortable: true,
+			    //     field: "deleteStatus",
+                 //    formatter: function (value, row, index) {
+                 //        if (value == '0')
+                 //        	return '<span class="label label-info">未删除</span>';
+                 //        return '<span class="label label-danger">已删除</span>';
+                 //    }
 			    },{
 			        title: "锁定",
 			        field: "locked",
@@ -179,7 +190,8 @@
                     formatter: function (value, row, index) {
                     	var operateHtml = '<@shiro.hasPermission name="system:user:edit"><button class="btn btn-primary btn-xs" type="button" onclick="edit(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;修改</button> &nbsp;</@shiro.hasPermission>';
                     	operateHtml = operateHtml + '<@shiro.hasPermission name="system:user:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-remove"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
-                    	operateHtml = operateHtml + '<@shiro.hasPermission name="system:user:grant"><button class="btn btn-info btn-xs" type="button" onclick="grant(\''+row.id+'\')"><i class="fa fa-arrows"></i>&nbsp;关联角色</button></@shiro.hasPermission>';
+                    	operateHtml = operateHtml + '<@shiro.hasPermission name="system:user:grant"><button class="btn btn-info btn-xs" type="button" onclick="grant(\''+row.id+'\')"><i class="fa fa-arrows"></i>&nbsp;关联角色</button> &nbsp;</@shiro.hasPermission>';
+                        operateHtml = operateHtml + '<@shiro.hasPermission name="system:user:grantDept"><button class="btn btn-info btn-xs" type="button" onclick="grantDept(\''+row.id+'\')"><i class="fa fa-arrows"></i>&nbsp;关联部门</button></@shiro.hasPermission>';
                         return operateHtml;
                     }
 			    }]
@@ -225,6 +237,21 @@
        	    	  }
         	    });
         }
+
+        function grantDept(id){
+            layer.open({
+                type: 2,
+                title: '关联部门',
+                shadeClose: true,
+                shade: false,
+                area: ['893px', '600px'],
+                content: '${ctx!}/admin/user/grantDept/'  + id,
+                end: function(index){
+                    $('#table_list').bootstrapTable("refresh");
+                }
+            });
+        }
+
         function del(id){
         	layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
         		$.ajax({

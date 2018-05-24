@@ -69,6 +69,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/admin/user/edit*", "perms[system:user:edit]");
 		filterChainDefinitionMap.put("/admin/user/deleteBatch", "perms[system:user:deleteBatch]");
 		filterChainDefinitionMap.put("/admin/user/grant/**", "perms[system:user:grant]");
+		filterChainDefinitionMap.put("/admin/user/grantDept/**", "perms[system:user:grantDept]");
 		//权限管理
 		filterChainDefinitionMap.put("/admin/role/index", "perms[system:role:index]");
 		filterChainDefinitionMap.put("/admin/role/add", "perms[system:role:add]");

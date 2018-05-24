@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.sppan.base.controller.BaseController;
+import com.sppan.base.entity.Dept;
+import com.sppan.base.service.IDeptService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
 import com.sppan.base.common.JsonResult;
@@ -35,6 +37,8 @@ public class UserController extends BaseController {
 	private IUserService userService;
 	@Autowired
 	private IRoleService roleService;
+	@Autowired
+	private IDeptService deptService;
 
 	@RequestMapping(value = { "/", "/index" })
 	public String index() {
@@ -110,6 +114,31 @@ public class UserController extends BaseController {
 	public JsonResult grant(@PathVariable Integer id,String[] roleIds, ModelMap map) {
 		try {
 			userService.grant(id,roleIds);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonResult.failure(e.getMessage());
+		}
+		return JsonResult.success();
+	}
+
+	@RequestMapping(value = "/grantDept/{id}", method = RequestMethod.GET)
+	public String grantDept(@PathVariable Integer id, ModelMap map) {
+		User user = userService.find(id);
+		map.put("user", user);
+
+		Dept dept = user.getDept();
+		map.put("deptId", dept == null ? "" : dept.getId());
+
+		List<Dept> depts = deptService.findAll();
+		map.put("depts", depts);
+		return "admin/user/grantDept";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/grantDept/{id}", method = RequestMethod.POST)
+	public JsonResult grantDept(@PathVariable Integer id,Integer deptId, ModelMap map) {
+		try {
+			userService.grantDept(id,deptId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return JsonResult.failure(e.getMessage());
