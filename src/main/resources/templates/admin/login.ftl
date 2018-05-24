@@ -44,9 +44,9 @@
             </div>
         </div>
         <div class="signup-footer">
-            <div class="pull-left">
-                &copy; SPPan
-            </div>
+            <#--<div class="pull-left">-->
+                <#--&copy; SPPan-->
+            <#--</div>-->
         </div>
     </div>
     
