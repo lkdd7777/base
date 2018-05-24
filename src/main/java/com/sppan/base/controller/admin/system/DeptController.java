@@ -32,7 +32,6 @@ public class DeptController extends BaseController {
 		String searchText = request.getParameter("searchText");
 		if(StringUtils.isNotBlank(searchText)){
 			builder.add("name", Operator.likeAll.name(), searchText);
-			builder.addOr("description", Operator.likeAll.name(), searchText);
 		}
 		Page<Dept> page = deptService.findAll(builder.generateSpecification(), getPageRequest());
 		return page;
