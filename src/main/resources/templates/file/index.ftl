@@ -114,7 +114,11 @@
             //数据列
             columns: [{
                 title: "文件名",
-                field: "name"
+                field: "name",
+                formatter: function (value, row, index) {
+                    console.info(row);
+                    return value +row.suffix;
+                }
             },{
                 title: "文号",
                 field: "number"
@@ -148,7 +152,8 @@
                 title: "预览",
                 field: "route",
                 formatter: function(value, row, index) {
-                    return "<a href='${ctx!}/"+value+"' target = '_blank'>查看</a>";
+                    //return "<a href='${ctx!}/"+value+"' target = '_blank'>查看</a>";
+                    return "<a href='#' onclick='view(\""+value+"\")'>查看</a>";
                 }
             },{
                 title: "操作",
@@ -199,6 +204,15 @@
         var html = [];
         html.push('<p><b>备注:</b> ' + row.remark + '</p>');
         return html.join('');
+    }
+
+    function view(value){
+        var fileUrl = "http://127.0.0.1:8080/"+value;
+        var url = "http://127.0.0.1:8012/onlinePreview?url=" + encodeURIComponent(fileUrl);
+
+        var winHeight = window.document.documentElement.clientHeight-10;
+        window.open(url, "_blank", "height=" + winHeight
+                + ",top=80,left=80,toolbar=no, menubar=no, scrollbars=yes, resizable=yes");
     }
 </script>
 

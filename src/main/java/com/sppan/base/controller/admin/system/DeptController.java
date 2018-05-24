@@ -22,7 +22,7 @@ public class DeptController extends BaseController {
 
 	@RequestMapping(value = { "/", "/index" })
 	public String index() {
-		return "admin/role/index";
+		return "admin/dept/index";
 	}
 
 	@RequestMapping(value = { "/list" })

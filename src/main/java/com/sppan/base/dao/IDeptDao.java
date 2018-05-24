@@ -7,17 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IDeptDao extends IBaseDao<Dept,Integer>{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

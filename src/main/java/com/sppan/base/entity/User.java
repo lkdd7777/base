@@ -1,18 +1,9 @@
 package com.sppan.base.entity;
 
 import java.util.Date;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -113,6 +104,10 @@ public class User extends BaseEntity {
 	@ManyToMany(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
 	@JoinTable(name = "tb_user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
 	private java.util.Set<Role> roles;
+
+	@OneToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	@JoinTable(name = "tb_user_dept", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "dept_id") })
+	private Dept dept;
 
 	public Integer getId() {
 		return id;
@@ -234,4 +229,11 @@ public class User extends BaseEntity {
 		this.roles = roles;
 	}
 
+	public Dept getDept() {
+		return dept;
+	}
+
+	public void setDept(Dept dept) {
+		this.dept = dept;
+	}
 }
