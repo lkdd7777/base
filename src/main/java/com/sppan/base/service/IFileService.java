@@ -14,4 +14,10 @@ public interface IFileService extends IBaseService<File,Integer> {
      */
     void saveOrUpdate(File file);
 
+    /**
+     * 逻辑删除
+     * @param file
+     */
+    void logicDel(File file);
+
 }

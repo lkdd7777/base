@@ -91,6 +91,7 @@ public class FileController extends BaseController {
         return JsonResult.success();
     }
 
+
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @ResponseBody
     public JsonResult delete(@PathVariable Integer id,ModelMap map) {
@@ -103,6 +104,80 @@ public class FileController extends BaseController {
         return JsonResult.success();
     }
 
+    /**
+     * 逻辑删除
+     * @param id
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/logicDelete/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult logicDelete(@PathVariable Integer id,ModelMap map) {
+        try {
+            File file = this.fileService.find(id);
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            file.setUser(user);
+            file.setDeleteStatus(1);
+            this.fileService.logicDel(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResult.failure(e.getMessage());
+        }
+        return JsonResult.success();
+    }
+
+    /**
+     * 还原
+     * @param id
+     * @param map
+     * @return
+     */
+    @RequestMapping(value = "/reduction/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult reduction(@PathVariable Integer id,ModelMap map) {
+        try {
+            File file = this.fileService.find(id);
+            file.setDeleteStatus(0);
+            this.fileService.logicDel(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonResult.failure(e.getMessage());
+        }
+        return JsonResult.success();
+    }
+
+    /**
+     * 回收站
+     * @return
+     */
+    @RequestMapping(value = "/recycle" )
+    public String recycle() {
+        return "file/recycle";
+    }
+
+    /**
+     * 回收站list
+     * @return
+     */
+    @RequestMapping(value = { "/recycleList" })
+    @ResponseBody
+    public Page<File> recycleList(){
+        SimpleSpecificationBuilder<File> builder = new SimpleSpecificationBuilder<File>();
+        String searchText = request.getParameter("searchText");
+        if(StringUtils.isNotBlank(searchText)){
+            builder.add("name", SpecificationOperator.Operator.likeAll.name(), searchText);
+        }
+        builder.add("deleteStatus",SpecificationOperator.Operator.eq.name(),1);
+        Page<File> page = fileService.findAll(builder.generateSpecification(), getPageRequest());
+
+        return page;
+    }
+
+    /**
+     * 下载
+     * @param id
+     * @throws FileNotFoundException
+     */
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
     public void download(@PathVariable("id")Integer id)throws FileNotFoundException {
         File file = this.fileService.find(id);
@@ -132,6 +207,7 @@ public class FileController extends BaseController {
 
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }finally{
             try {
                 if (in != null) {

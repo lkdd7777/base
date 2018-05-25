@@ -95,6 +95,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/file/add", "perms[web:file:add]");
 		filterChainDefinitionMap.put("/file/edit*", "perms[web:file:edit]");
 		filterChainDefinitionMap.put("/file/deleteBatch", "perms[web:file:deleteBatch]");
+		filterChainDefinitionMap.put("/file/logicDeleteBatch", "perms[web:file:logicDeleteBatch]");
+		filterChainDefinitionMap.put("/file/reductionBatch", "perms[web:file:reductionBatch]");
+		filterChainDefinitionMap.put("/file/recycle", "perms[web:file:recycle]");
 		filterChainDefinitionMap.put("/file/download*", "perms[web:file:download]");
 		shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilter;

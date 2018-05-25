@@ -28,4 +28,8 @@ public class FileServiceImpl extends BaseServiceImpl<File,Integer> implements IF
         save(file);
     }
 
+    @Override
+    public void logicDel(File file) {
+        update(file);
+    }
 }
