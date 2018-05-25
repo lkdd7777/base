@@ -13,16 +13,6 @@ public class LoggerUtil {
 
     public LoggerUtil(){}
 
-    public static Log getLog(HttpServletRequest request) {
-        //1.依次获取每个属性信息 userId,operator,action,remark,ip,targetType
-        Log log = new Log();
-        log.setIp(LoggerUtil.getCliectIp(request));
-        log.setAction("create");
-        log.setTargetType("message");
-        log.setRemark("消息发布");
-        return log;
-    }
-
     /**
      * 获取客户端ip地址
      * @param request
