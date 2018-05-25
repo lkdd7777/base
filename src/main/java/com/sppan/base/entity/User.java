@@ -105,7 +105,7 @@ public class User extends BaseEntity {
 	@JoinTable(name = "tb_user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "role_id") })
 	private java.util.Set<Role> roles;
 
-	@OneToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)
+	@OneToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_user_dept", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "dept_id") })
 	private Dept dept;
 

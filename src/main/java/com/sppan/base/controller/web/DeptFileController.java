@@ -48,14 +48,13 @@ public class DeptFileController extends BaseController {
         //获取登录用户
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         //查询数据库的用户信息
-        User dbUser = userService.find(user.getId());
-        Dept dept = dbUser.getDept();
+        Dept dept = user.getDept();
         SimpleSpecificationBuilder<DeptFile> builder = new SimpleSpecificationBuilder<DeptFile>();
         String searchText = request.getParameter("searchText");
         if(StringUtils.isNotBlank(searchText)){
             builder.add("name", SpecificationOperator.Operator.likeAll.name(), searchText);
         }
-        builder.add("dept.id",SpecificationOperator.Operator.eq.name(),dept.getId());
+        builder.add("dept",SpecificationOperator.Operator.eq.name(),dept);
         builder.add("deleteStatus",SpecificationOperator.Operator.eq.name(),0);
         Page<DeptFile> page = deptFileService.findAll(builder.generateSpecification(), getPageRequest());
 
@@ -174,11 +173,15 @@ public class DeptFileController extends BaseController {
     @RequestMapping(value = { "/recycleList" })
     @ResponseBody
     public Page<DeptFile> recycleList(){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        //查询数据库的用户信息
+        Dept dept = user.getDept();
         SimpleSpecificationBuilder<DeptFile> builder = new SimpleSpecificationBuilder<DeptFile>();
         String searchText = request.getParameter("searchText");
         if(StringUtils.isNotBlank(searchText)){
             builder.add("name", SpecificationOperator.Operator.likeAll.name(), searchText);
         }
+        builder.add("dept",SpecificationOperator.Operator.eq.name(),dept);
         builder.add("deleteStatus",SpecificationOperator.Operator.eq.name(),1);
         Page<DeptFile> page = deptFileService.findAll(builder.generateSpecification(), getPageRequest());
 
