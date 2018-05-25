@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tbl_dept_file")
+@Table(name = "tb_dept_file")
 public class DeptFile extends BaseEntity{
 
     private static final long serialVersionUID = 1L;

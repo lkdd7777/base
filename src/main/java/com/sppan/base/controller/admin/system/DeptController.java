@@ -1,6 +1,7 @@
 package com.sppan.base.controller.admin.system;
 
 import com.sppan.base.common.JsonResult;
+import com.sppan.base.common.annotation.LogAnnotation;
 import com.sppan.base.controller.BaseController;
 import com.sppan.base.entity.Dept;
 import com.sppan.base.service.IDeptService;
@@ -20,6 +21,7 @@ public class DeptController extends BaseController {
 	@Autowired
 	private IDeptService deptService;
 
+	@LogAnnotation(targetType = "dept",action = "/admin/dept/index",remark = "部门管理")
 	@RequestMapping(value = { "/", "/index" })
 	public String index() {
 		return "admin/dept/index";
@@ -36,7 +38,8 @@ public class DeptController extends BaseController {
 		Page<Dept> page = deptService.findAll(builder.generateSpecification(), getPageRequest());
 		return page;
 	}
-	
+
+
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(ModelMap map) {
 		return "admin/dept/form";
@@ -49,8 +52,8 @@ public class DeptController extends BaseController {
 		map.put("dept", dept);
 		return "admin/dept/form";
 	}
-	
-	
+
+
 	@RequestMapping(value= {"/edit"},method = RequestMethod.POST)
 	@ResponseBody
 	public JsonResult edit(Dept dept,ModelMap map){
@@ -61,7 +64,8 @@ public class DeptController extends BaseController {
 		}
 		return JsonResult.success();
 	}
-	
+
+	@LogAnnotation(targetType = "dept",action = "/admin/dept/edit",remark = "删除部门")
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
 	@ResponseBody
 	public JsonResult delete(@PathVariable Integer id,ModelMap map) {

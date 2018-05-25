@@ -1,6 +1,7 @@
 package com.sppan.base.controller.admin;
 
 import com.sppan.base.common.JsonResult;
+import com.sppan.base.common.annotation.LogAnnotation;
 import com.sppan.base.common.utils.MD5Utils;
 import com.sppan.base.controller.BaseController;
 import com.sppan.base.controller.BaseController;
@@ -23,13 +24,16 @@ public class LoginController extends BaseController {
 	@Autowired
 	private IUserService userService;
 
+
 	@RequestMapping(value = { "/admin/login" }, method = RequestMethod.GET)
 	public String login() {
 
 		return "admin/login";
 	}
+
+	@LogAnnotation(targetType = "admin",action = "/admin/login",remark = "登录")
 	@RequestMapping(value = { "/admin/login" }, method = RequestMethod.POST)
-	public String login(@RequestParam("username") String username,
+	public String loginReq(@RequestParam("username") String username,
 			@RequestParam("password") String password,ModelMap model
 			) {
 		try {
@@ -42,19 +46,28 @@ public class LoginController extends BaseController {
 		}
 		return "admin/login";
 	}
-	
+
+	@LogAnnotation(targetType = "admin",action = "/admin/logout",remark = "注销")
 	@RequestMapping(value = { "/admin/logout" }, method = RequestMethod.GET)
 	public String logout() {
+
+		return redirect("/admin/logourUser");
+	}
+
+	@RequestMapping(value = { "/admin/logourUser" }, method = RequestMethod.GET)
+	public String logourUser(){
 		Subject subject = SecurityUtils.getSubject();
 		subject.logout();
 		return redirect("admin/login");
 	}
+
 
 	@RequestMapping(value = { "/admin/repassword" }, method = RequestMethod.GET)
 	public String repassword(){
 		return "admin/repassword";
 	}
 
+	@LogAnnotation(targetType = "admin",action = "/admin/savePasswd",remark = "修改密码")
 	@ResponseBody
 	@RequestMapping(value = "/admin/savePasswd", method = RequestMethod.POST)
 	public JsonResult savePasswd(String password, String newPassword, String reNewPassword, ModelMap map) {

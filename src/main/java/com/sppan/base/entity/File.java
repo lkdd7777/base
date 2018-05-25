@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "tbl_file")
+@Table(name = "tb_file")
 public class File extends BaseEntity{
 
     private static final long serialVersionUID = 1L;
