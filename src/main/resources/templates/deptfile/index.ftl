@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>公共文件</title>
+    <title>部门文件</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -83,7 +83,7 @@
             //必须设置，不然request.getParameter获取不到请求参数
             contentType: "application/x-www-form-urlencoded",
             //获取数据的Servlet地址
-            url: "${ctx!}/file/list",
+            url: "${ctx!}/deptfile/list",
             //表格显示条纹
             striped: true,
             //启动分页
@@ -168,7 +168,7 @@
     });
 
     function download(id){
-        var url = '${ctx!}/file/download/'+id;
+        var url = '${ctx!}/deptfile/download/'+id;
         window.open(url);
     }
     function add(){
@@ -178,7 +178,7 @@
             shadeClose: true,
             shade: false,
             area: ['893px', '600px'],
-            content: '${ctx!}/file/add',
+            content: '${ctx!}/deptfile/add',
             end: function(index){
                 $('#table_list').bootstrapTable("refresh");
             }
@@ -189,7 +189,7 @@
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: "${ctx!}/file/logicDelete/" + id,
+                url: "${ctx!}/deptfile/logicDelete/" + id,
                 success: function(msg){
                     layer.msg(msg.message, {time: 2000},function(){
                         $('#table_list').bootstrapTable("refresh");

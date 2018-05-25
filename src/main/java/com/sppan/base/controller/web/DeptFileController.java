@@ -2,9 +2,13 @@ package com.sppan.base.controller.web;
 
 import com.sppan.base.common.JsonResult;
 import com.sppan.base.controller.BaseController;
+import com.sppan.base.entity.Dept;
+import com.sppan.base.entity.DeptFile;
 import com.sppan.base.entity.File;
 import com.sppan.base.entity.User;
+import com.sppan.base.service.IDeptFileService;
 import com.sppan.base.service.IFileService;
+import com.sppan.base.service.IUserService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
 import org.apache.commons.lang3.StringUtils;
@@ -15,50 +19,57 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-import java.io.InputStream;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.Date;
 
 @Controller
-@RequestMapping("/file")
-public class FileController extends BaseController {
+@RequestMapping("/deptfile")
+public class DeptFileController extends BaseController {
 
     @Autowired
-    private IFileService fileService;
+    private IDeptFileService deptFileService;
+
+    @Autowired
+    private IUserService userService;
 
     @RequestMapping(value = { "/", "/index" })
     public String index() {
-        return "file/index";
+        return "deptfile/index";
     }
 
     @RequestMapping(value = { "/list" })
     @ResponseBody
-    public Page<File> list(){
-        SimpleSpecificationBuilder<File> builder = new SimpleSpecificationBuilder<File>();
+    public Page<DeptFile> list(){
+        //获取登录用户
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        //查询数据库的用户信息
+        User dbUser = userService.find(user.getId());
+        Dept dept = dbUser.getDept();
+        SimpleSpecificationBuilder<DeptFile> builder = new SimpleSpecificationBuilder<DeptFile>();
         String searchText = request.getParameter("searchText");
         if(StringUtils.isNotBlank(searchText)){
             builder.add("name", SpecificationOperator.Operator.likeAll.name(), searchText);
         }
+        builder.add("dept.id",SpecificationOperator.Operator.eq.name(),dept.getId());
         builder.add("deleteStatus",SpecificationOperator.Operator.eq.name(),0);
-        Page<File> page = fileService.findAll(builder.generateSpecification(), getPageRequest());
+        Page<DeptFile> page = deptFileService.findAll(builder.generateSpecification(), getPageRequest());
 
         return page;
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(ModelMap map) {
-        return "file/form";
+        return "deptfile/form";
     }
 
     @RequestMapping(value= {"/edit"} ,method = RequestMethod.POST)
     @ResponseBody
-    public JsonResult edit(File bean,@RequestParam("file") MultipartFile file){
+    public JsonResult edit(DeptFile bean,@RequestParam("file") MultipartFile file){
         try {
             User user = (User) SecurityUtils.getSubject().getPrincipal();
             if(null == user){
@@ -82,9 +93,10 @@ public class FileController extends BaseController {
             bean.setDeleteStatus(0);
             bean.setCreateTime(new Date());
 
+            bean.setDept(user.getDept());
             bean.setUser(user);
 
-            fileService.saveOrUpdate(bean);
+            deptFileService.saveOrUpdate(bean);
         } catch (Exception e) {
             return JsonResult.failure(e.getMessage());
         }
@@ -96,7 +108,7 @@ public class FileController extends BaseController {
     @ResponseBody
     public JsonResult delete(@PathVariable Integer id,ModelMap map) {
         try {
-            this.fileService.delete(id);
+            this.deptFileService.delete(id);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -114,11 +126,11 @@ public class FileController extends BaseController {
     @ResponseBody
     public JsonResult logicDelete(@PathVariable Integer id,ModelMap map) {
         try {
-            File file = this.fileService.find(id);
+            DeptFile file = this.deptFileService.find(id);
             User user = (User) SecurityUtils.getSubject().getPrincipal();
             file.setUser(user);
             file.setDeleteStatus(1);
-            this.fileService.logicDel(file);
+            this.deptFileService.logicDel(file);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -136,9 +148,9 @@ public class FileController extends BaseController {
     @ResponseBody
     public JsonResult reduction(@PathVariable Integer id,ModelMap map) {
         try {
-            File file = this.fileService.find(id);
+            DeptFile file = this.deptFileService.find(id);
             file.setDeleteStatus(0);
-            this.fileService.logicDel(file);
+            this.deptFileService.logicDel(file);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -152,7 +164,7 @@ public class FileController extends BaseController {
      */
     @RequestMapping(value = "/recycle" )
     public String recycle() {
-        return "file/recycle";
+        return "deptfile/recycle";
     }
 
     /**
@@ -161,14 +173,14 @@ public class FileController extends BaseController {
      */
     @RequestMapping(value = { "/recycleList" })
     @ResponseBody
-    public Page<File> recycleList(){
-        SimpleSpecificationBuilder<File> builder = new SimpleSpecificationBuilder<File>();
+    public Page<DeptFile> recycleList(){
+        SimpleSpecificationBuilder<DeptFile> builder = new SimpleSpecificationBuilder<DeptFile>();
         String searchText = request.getParameter("searchText");
         if(StringUtils.isNotBlank(searchText)){
             builder.add("name", SpecificationOperator.Operator.likeAll.name(), searchText);
         }
         builder.add("deleteStatus",SpecificationOperator.Operator.eq.name(),1);
-        Page<File> page = fileService.findAll(builder.generateSpecification(), getPageRequest());
+        Page<DeptFile> page = deptFileService.findAll(builder.generateSpecification(), getPageRequest());
 
         return page;
     }
@@ -180,7 +192,7 @@ public class FileController extends BaseController {
      */
     @RequestMapping(value = "/download/{id}", method = RequestMethod.GET)
     public void download(@PathVariable("id")Integer id)throws FileNotFoundException {
-        File file = this.fileService.find(id);
+        DeptFile file = this.deptFileService.find(id);
         String fileName = file.getName() + file.getSuffix();
 
         // 下载本地文件

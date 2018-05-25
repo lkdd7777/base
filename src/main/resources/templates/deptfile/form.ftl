@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>公共文件</title>
+    <title>部门文件</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -133,7 +133,7 @@
         messages: {},
         submitHandler:function(form){
             var options = {
-                url: "${ctx!}/file/edit",
+                url: "${ctx!}/deptfile/edit",
                 type : 'POST',
                 dataType : 'json',
                 success : function(msg) {

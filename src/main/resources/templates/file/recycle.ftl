@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>公共文件</title>
+    <title>公共文件回收站</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
 
@@ -31,12 +31,6 @@
                     <h5>列表</h5>
                 </div>
                 <div class="ibox-content">
-                    <p>
-                        	<#--<@shiro.hasPermission name="web:file:add">-->
-                                <button class="btn btn-success " type="button" onclick="add();"><i class="fa fa-plus"></i>&nbsp;添加</button>
-                            <#--</@shiro.hasPermission>-->
-                    </p>
-                    <hr>
                     <div class="row row-lg">
                         <div class="col-sm-12">
                             <!-- Example Card View -->
@@ -83,7 +77,7 @@
             //必须设置，不然request.getParameter获取不到请求参数
             contentType: "application/x-www-form-urlencoded",
             //获取数据的Servlet地址
-            url: "${ctx!}/file/list",
+            url: "${ctx!}/file/recycleList",
             //表格显示条纹
             striped: true,
             //启动分页
@@ -159,7 +153,7 @@
                 title: "操作",
                 field: "empty",
                 formatter: function (value, row, index) {
-                    var operateHtml = '<@shiro.hasPermission name="web:file:download"><button class="btn btn-primary btn-xs" type="button" onclick="download(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;下载</button> &nbsp;</@shiro.hasPermission>';
+                    var operateHtml = '<@shiro.hasPermission name="web:file:reductionBatch"><button class="btn btn-primary btn-xs" type="button" onclick="reduction(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;还原</button> &nbsp;</@shiro.hasPermission>';
                     operateHtml = operateHtml + '<@shiro.hasPermission name="web:file:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-remove"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
@@ -167,29 +161,28 @@
         });
     });
 
-    function download(id){
-        var url = '${ctx!}/file/download/'+id;
-        window.open(url);
-    }
-    function add(){
-        layer.open({
-            type: 2,
-            title: '文件添加',
-            shadeClose: true,
-            shade: false,
-            area: ['893px', '600px'],
-            content: '${ctx!}/file/add',
-            end: function(index){
-                $('#table_list').bootstrapTable("refresh");
-            }
-        });
-    }
     function del(id){
         layer.confirm('确定删除吗?', {icon: 3, title:'提示'}, function(index){
             $.ajax({
                 type: "POST",
                 dataType: "json",
-                url: "${ctx!}/file/logicDelete/" + id,
+                url: "${ctx!}/file/delete/" + id,
+                success: function(msg){
+                    layer.msg(msg.message, {time: 2000},function(){
+                        $('#table_list').bootstrapTable("refresh");
+                        layer.close(index);
+                    });
+                }
+            });
+        });
+    }
+
+    function reduction(id){
+        layer.confirm('确定还原吗?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "${ctx!}/file/reduction/" + id,
                 success: function(msg){
                     layer.msg(msg.message, {time: 2000},function(){
                         $('#table_list').bootstrapTable("refresh");
