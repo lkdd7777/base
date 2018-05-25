@@ -53,6 +53,7 @@ public class ShiroConfig {
 		shiroFilter.setSecurityManager(securityManager);
 		shiroFilter.setLoginUrl("/admin/login");
 		shiroFilter.setSuccessUrl("/admin/index");
+//		shiroFilter.setUnauthorizedUrl("/admin/savePasswd");
 		shiroFilter.setUnauthorizedUrl("/previlige/no");
 		Map<String, String> filterChainDefinitionMap = new HashMap<String, String>();
 		//静态文件

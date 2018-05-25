@@ -127,10 +127,19 @@
                             </a>
                             <ul class="dropdown-menu dropdown-alerts">
                                 <li>
+                                    <a href="javascript:void(0)" onclick="repassword();">
+                                        <div>
+                                            <i class="fa fa-unlock-alt"></i> 修改密码
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="${ctx!}/admin/logout">
                                         <div>
                                             <i class="fa fa-remove"></i> 注销
-                                            <span class="pull-right text-muted small"><@shiro.principal type="com.sppan.base.entity.User" property="userName"/></span>
+                                        <#--<span class="pull-right text-muted small">-->
+                                        <#--<@shiro.principal type="com.sppan.base.entity.User" property="userName"/>-->
+                                        <#--</span>-->
                                         </div>
                                     </a>
                                 </li>
@@ -156,6 +165,22 @@
     <!-- 自定义js -->
     <script src="${ctx!}/assets/js/hAdmin.js?v=4.1.0"></script>
     <script type="text/javascript" src="${ctx!}/assets/js/index.js"></script>
+    <script>
+        function repassword() {
+            layer.open({
+                type: 2,
+                title: '修改密码',
+                shadeClose: true,
+                shade: false,
+                area: ['893px', '400px'],
+                content: '${ctx!}/admin/repassword',
+                end: function(index){
+                    $('#table_list').bootstrapTable("refresh");
+                }
+            });
+        }
+        
+    </script>
 </body>
 
 </html>
