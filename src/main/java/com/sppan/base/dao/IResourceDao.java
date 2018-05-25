@@ -23,7 +23,7 @@ public interface IResourceDao extends IBaseDao<Resource, Integer> {
 	@Query(nativeQuery = true,value = "SELECT * FROM tb_resource WHERE `level` = :level order by sort ASC ")
 	List<Resource> findMenu(@Param("level") Integer level);
 
-	@Query(nativeQuery = true,value = "SELECT * FROM tb_resource WHERE parent_id = :parentId")
+	@Query(nativeQuery = true,value = "SELECT * FROM tb_resource WHERE parent_id = :parentId order by sort ASC")
 	List<Resource> findByParentId(@Param("parentId") Integer parentId);
 
 

@@ -90,7 +90,7 @@ public class ShiroConfig {
 		
 		filterChainDefinitionMap.put("/admin/**", "authc");
 
-		//文件管理
+		//公共文件管理
 		filterChainDefinitionMap.put("/file/index", "perms[web:file:index]");
 		filterChainDefinitionMap.put("/file/add", "perms[web:file:add]");
 		filterChainDefinitionMap.put("/file/edit*", "perms[web:file:edit]");
@@ -99,6 +99,16 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/file/reductionBatch", "perms[web:file:reductionBatch]");
 		filterChainDefinitionMap.put("/file/recycle", "perms[web:file:recycle]");
 		filterChainDefinitionMap.put("/file/download*", "perms[web:file:download]");
+
+		//部门文件管理
+		filterChainDefinitionMap.put("/deptfile/index", "perms[web:deptfile:index]");
+		filterChainDefinitionMap.put("/deptfile/add", "perms[web:deptfile:add]");
+		filterChainDefinitionMap.put("/deptfile/edit*", "perms[web:deptfile:edit]");
+		filterChainDefinitionMap.put("/deptfile/deleteBatch", "perms[web:deptfile:deleteBatch]");
+		filterChainDefinitionMap.put("/deptfile/logicDeleteBatch", "perms[web:deptfile:logicDeleteBatch]");
+		filterChainDefinitionMap.put("/deptfile/reductionBatch", "perms[web:deptfile:reductionBatch]");
+		filterChainDefinitionMap.put("/deptfile/recycle", "perms[web:deptfile:recycle]");
+		filterChainDefinitionMap.put("/deptfile/download*", "perms[web:deptfile:download]");
 		shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		return shiroFilter;
 	}
