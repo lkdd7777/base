@@ -62,7 +62,6 @@ public class SimpleSpecificationBuilder<T> {
         return this.add(key,oper,value, SpecificationOperator.Join.and.name());
     }
 
-
     public Specification<T> generateSpecification() {
         Specification<T> specification = new SimpleSpecification<T>(opers);
         return specification;

@@ -1,6 +1,7 @@
 package com.sppan.base.common.log;
 
 import com.sppan.base.common.annotation.LogAnnotation;
+import com.sppan.base.common.utils.DFormat;
 import com.sppan.base.entity.Log;
 import com.sppan.base.entity.User;
 import com.sppan.base.service.ILogService;
@@ -15,13 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 
 @Aspect
 @Component
@@ -59,7 +60,43 @@ public class LogAopAction {
             log.setIp(LoggerUtil.getCliectIp(request));
 
             //删除，修改，关联，下载会用到id
-            String id = request.getParameter("id");
+//            String id = request.getParameter("id");
+//            String remark = log.getRemark();
+//            List<String> keys = DFormat.getKeys(remark);
+//            if(null != keys && keys.size() > 0){
+//                Map<String,Object> valmap = new HashMap<String,Object>();
+//
+//                for (String key:keys) {
+//                    Object object = request.getParameter(key);
+//
+//                    if (key.indexOf(".") > 0){
+//                        String className = key.substring(0,key.indexOf("."));
+//                        String param = key.substring(key.indexOf(".")+1,key.length());
+//                        object = request.getParameter(className);
+//
+//                        Class targetClass = Class.forName(className);
+//                        Field[] fields = targetClass.getDeclaredFields();
+//
+//                        for (int i = 0; i < fields.length; i++) {
+//                            String type = fields[i].getGenericType().toString();
+//                            String name = fields[i].getName();
+//                            Object value = null;
+//                            if(param.equals(name)){
+//                                String getName = "get"+getMethodName(name);
+//                                Method method = targetClass.getMethod(getName,null);
+//                                value = method.invoke(object);
+//
+//                                valmap.put(key, value);
+//                            }
+//                        }
+//                    }
+//
+//                    valmap.put(key,object);
+//                }
+//
+//                String newRemark = DFormat.stringFormat(remark,valmap);
+//                log.setRemark(newRemark);
+//            }
 
             log.setCreateTime(new Date());
             logService.save(log);
@@ -88,5 +125,18 @@ public class LogAopAction {
             }
         }
         return map;
+    }
+
+    private String getMethodName(String fildeName){
+        byte[] items = fildeName.getBytes();
+        items[0] = (byte) ((char) items[0] - 'a' + 'A');
+        return new String(items);
+    }
+
+    public String analysis(String remark,HttpServletRequest request){
+        if(remark.indexOf("{") == -1){
+
+        }
+        return "";
     }
 }

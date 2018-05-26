@@ -1,10 +1,14 @@
 package com.sppan.base.controller.web;
 
 import com.sppan.base.common.JsonResult;
+import com.sppan.base.common.annotation.LogAnnotation;
+import com.sppan.base.common.log.LoggerUtil;
 import com.sppan.base.controller.BaseController;
 import com.sppan.base.entity.File;
+import com.sppan.base.entity.Log;
 import com.sppan.base.entity.User;
 import com.sppan.base.service.IFileService;
+import com.sppan.base.service.ILogService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedInputStream;
@@ -31,6 +36,8 @@ public class FileController extends BaseController {
 
     @Autowired
     private IFileService fileService;
+    @Autowired
+    private ILogService logService;
 
     @RequestMapping(value = { "/", "/index" })
     public String index() {
@@ -61,9 +68,7 @@ public class FileController extends BaseController {
     public JsonResult edit(File bean,@RequestParam("file") MultipartFile file){
         try {
             User user = (User) SecurityUtils.getSubject().getPrincipal();
-            if(null == user){
-                return JsonResult.failure("登录失效，请重新登录");
-            }
+            Assert.notNull(user, "用户不存在");
 
             if(file != null){
                 String originalFilename = file.getOriginalFilename();
@@ -85,17 +90,22 @@ public class FileController extends BaseController {
             bean.setUser(user);
 
             fileService.saveOrUpdate(bean);
+
+            logService.saveLog(user,request,"上传公共文件："+bean.getName()+bean.getSuffix());
         } catch (Exception e) {
             return JsonResult.failure(e.getMessage());
         }
         return JsonResult.success();
     }
 
-
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @ResponseBody
     public JsonResult delete(@PathVariable Integer id,ModelMap map) {
         try {
+            File bean = this.fileService.find(id);
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            logService.saveLog(user,request,"删除公共文件："+bean.getName()+bean.getSuffix());
+
             this.fileService.delete(id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,6 +129,8 @@ public class FileController extends BaseController {
             file.setUser(user);
             file.setDeleteStatus(1);
             this.fileService.logicDel(file);
+
+            logService.saveLog(user,request,"删除公共文件到回收站："+file.getName()+file.getSuffix());
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -139,6 +151,9 @@ public class FileController extends BaseController {
             File file = this.fileService.find(id);
             file.setDeleteStatus(0);
             this.fileService.logicDel(file);
+
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            logService.saveLog(user,request,"从回收站还原公共文件："+file.getName()+file.getSuffix());
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -182,6 +197,9 @@ public class FileController extends BaseController {
     public void download(@PathVariable("id")Integer id)throws FileNotFoundException {
         File file = this.fileService.find(id);
         String fileName = file.getName() + file.getSuffix();
+
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        logService.saveLog(user,request,"下载公共文件："+file.getName()+file.getSuffix());
 
         // 下载本地文件
         String filePath = uploadPath.getPath() + file.getRoute();

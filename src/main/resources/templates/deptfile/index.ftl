@@ -32,9 +32,9 @@
                 </div>
                 <div class="ibox-content">
                     <p>
-                        	<#--<@shiro.hasPermission name="web:file:add">-->
+                        	<@shiro.hasPermission name="web:deptfile:add">
                                 <button class="btn btn-success " type="button" onclick="add();"><i class="fa fa-plus"></i>&nbsp;添加</button>
-                            <#--</@shiro.hasPermission>-->
+                            </@shiro.hasPermission>
                     </p>
                     <hr>
                     <div class="row row-lg">
@@ -159,8 +159,8 @@
                 title: "操作",
                 field: "empty",
                 formatter: function (value, row, index) {
-                    var operateHtml = '<@shiro.hasPermission name="web:file:download"><button class="btn btn-primary btn-xs" type="button" onclick="download(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;下载</button> &nbsp;</@shiro.hasPermission>';
-                    operateHtml = operateHtml + '<@shiro.hasPermission name="web:file:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-remove"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
+                    var operateHtml = '<@shiro.hasPermission name="web:deptfile:download"><button class="btn btn-primary btn-xs" type="button" onclick="download(\''+row.id+'\')"><i class="fa fa-edit"></i>&nbsp;下载</button> &nbsp;</@shiro.hasPermission>';
+                    operateHtml = operateHtml + '<@shiro.hasPermission name="web:deptfile:deleteBatch"><button class="btn btn-danger btn-xs" type="button" onclick="del(\''+row.id+'\')"><i class="fa fa-remove"></i>&nbsp;删除</button> &nbsp;</@shiro.hasPermission>';
                     return operateHtml;
                 }
             }]

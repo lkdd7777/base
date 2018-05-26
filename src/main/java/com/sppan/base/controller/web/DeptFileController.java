@@ -8,6 +8,7 @@ import com.sppan.base.entity.File;
 import com.sppan.base.entity.User;
 import com.sppan.base.service.IDeptFileService;
 import com.sppan.base.service.IFileService;
+import com.sppan.base.service.ILogService;
 import com.sppan.base.service.IUserService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +38,9 @@ public class DeptFileController extends BaseController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private ILogService logService;
 
     @RequestMapping(value = { "/", "/index" })
     public String index() {
@@ -71,9 +76,10 @@ public class DeptFileController extends BaseController {
     public JsonResult edit(DeptFile bean,@RequestParam("file") MultipartFile file){
         try {
             User user = (User) SecurityUtils.getSubject().getPrincipal();
-            if(null == user){
-                return JsonResult.failure("登录失效，请重新登录");
-            }
+            Assert.notNull(user, "用户不存在");
+
+            Dept dept = user.getDept();
+            Assert.notNull(dept, "您还没有关联部门，不能添加文件");
 
             if(file != null){
                 String originalFilename = file.getOriginalFilename();
@@ -96,6 +102,8 @@ public class DeptFileController extends BaseController {
             bean.setUser(user);
 
             deptFileService.saveOrUpdate(bean);
+
+            logService.saveLog(user,request,"上传部门文件："+bean.getName()+bean.getSuffix());
         } catch (Exception e) {
             return JsonResult.failure(e.getMessage());
         }
@@ -107,6 +115,10 @@ public class DeptFileController extends BaseController {
     @ResponseBody
     public JsonResult delete(@PathVariable Integer id,ModelMap map) {
         try {
+            DeptFile bean = this.deptFileService.find(id);
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            logService.saveLog(user,request,"删除部门文件："+bean.getName()+bean.getSuffix());
+
             this.deptFileService.delete(id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,6 +142,8 @@ public class DeptFileController extends BaseController {
             file.setUser(user);
             file.setDeleteStatus(1);
             this.deptFileService.logicDel(file);
+
+            logService.saveLog(user,request,"删除部门文件到回收站："+file.getName()+file.getSuffix());
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -150,6 +164,9 @@ public class DeptFileController extends BaseController {
             DeptFile file = this.deptFileService.find(id);
             file.setDeleteStatus(0);
             this.deptFileService.logicDel(file);
+
+            User user = (User) SecurityUtils.getSubject().getPrincipal();
+            logService.saveLog(user,request,"从回收站还原部门文件："+file.getName()+file.getSuffix());
         } catch (Exception e) {
             e.printStackTrace();
             return JsonResult.failure(e.getMessage());
@@ -197,6 +214,9 @@ public class DeptFileController extends BaseController {
     public void download(@PathVariable("id")Integer id)throws FileNotFoundException {
         DeptFile file = this.deptFileService.find(id);
         String fileName = file.getName() + file.getSuffix();
+
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        logService.saveLog(user,request,"下载部门文件："+file.getName()+file.getSuffix());
 
         // 下载本地文件
         String filePath = uploadPath.getPath() + file.getRoute();

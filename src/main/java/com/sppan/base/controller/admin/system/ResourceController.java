@@ -3,6 +3,8 @@ package com.sppan.base.controller.admin.system;
 import java.util.List;
 
 import com.sppan.base.controller.BaseController;
+import com.sppan.base.entity.User;
+import com.sppan.base.service.ILogService;
 import com.sppan.base.service.IResourceService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
@@ -16,6 +18,7 @@ import com.sppan.base.service.specification.SpecificationOperator.Operator;
 import com.sppan.base.vo.ZtreeView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -30,6 +33,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ResourceController extends BaseController {
 	@Autowired
 	private IResourceService resourceService;
+
+	@Autowired
+	private ILogService logService;
 	
 	@RequestMapping("/tree/{resourceId}")
 	@ResponseBody
@@ -70,6 +76,7 @@ public class ResourceController extends BaseController {
 		
 		List<Resource> list = resourceService.parent();
 		map.put("list", list);
+
 		return "admin/resource/form";
 	}
 	
@@ -78,6 +85,9 @@ public class ResourceController extends BaseController {
 	public JsonResult edit(Resource resource,ModelMap map){
 		try {
 			resourceService.saveOrUpdate(resource);
+
+			User user = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(user,request,"编辑资源："+resource.getName());
 		} catch (Exception e) {
 			return JsonResult.failure(e.getMessage());
 		}
@@ -88,6 +98,9 @@ public class ResourceController extends BaseController {
 	@ResponseBody
 	public JsonResult delete(@PathVariable Integer id,ModelMap map) {
 		try {
+			Resource resource = this.resourceService.find(id);
+			User user = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(user,request,"删除资源："+resource.getName());
 			resourceService.delete(id);
 		} catch (Exception e) {
 			e.printStackTrace();

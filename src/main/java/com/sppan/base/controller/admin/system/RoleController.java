@@ -1,6 +1,8 @@
 package com.sppan.base.controller.admin.system;
 
 import com.sppan.base.controller.BaseController;
+import com.sppan.base.entity.User;
+import com.sppan.base.service.ILogService;
 import com.sppan.base.service.IResourceService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
@@ -13,6 +15,7 @@ import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator.Operator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,9 @@ public class RoleController extends BaseController {
 	
 	@Autowired
 	private IResourceService resourceService;
+
+	@Autowired
+	private ILogService logService;
 
 	@RequestMapping(value = { "/", "/index" })
 	public String index() {
@@ -70,6 +76,9 @@ public class RoleController extends BaseController {
 	public JsonResult edit(Role role,ModelMap map){
 		try {
 			roleService.saveOrUpdate(role);
+
+			User user = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(user,request,"编辑角色："+role.getName());
 		} catch (Exception e) {
 			return JsonResult.failure(e.getMessage());
 		}
@@ -80,6 +89,10 @@ public class RoleController extends BaseController {
 	@ResponseBody
 	public JsonResult delete(@PathVariable Integer id,ModelMap map) {
 		try {
+			Role role = this.roleService.find(id);
+			User user = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(user,request,"删除角色："+role.getName());
+
 			roleService.delete(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -101,6 +114,9 @@ public class RoleController extends BaseController {
 			@RequestParam(required = false) String[] resourceIds, ModelMap map) {
 		try {
 			roleService.grant(id,resourceIds);
+			Role role = this.roleService.find(id);
+			User user = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(user,request,"给角色["+role.getName()+"]分配资源");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return JsonResult.failure(e.getMessage());

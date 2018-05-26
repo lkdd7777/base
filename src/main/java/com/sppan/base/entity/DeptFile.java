@@ -75,11 +75,11 @@ public class DeptFile extends BaseEntity{
     private String remark;
 
     @OneToOne
-    @JoinTable(name = "tb_user_file", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "file_id") })
+    @JoinTable(name = "tb_dept_file_user", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = { @JoinColumn(name = "file_id") })
     private User user;
 
     @OneToOne
-    @JoinTable(name = "tb_dept_file_relate", joinColumns = { @JoinColumn(name = "dept_id") }, inverseJoinColumns = { @JoinColumn(name = "file_id") })
+    @JoinTable(name = "tb_dept_file_dept", joinColumns = { @JoinColumn(name = "dept_id") }, inverseJoinColumns = { @JoinColumn(name = "file_id") })
     private Dept dept;
 
 

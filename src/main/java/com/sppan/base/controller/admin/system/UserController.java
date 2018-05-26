@@ -8,6 +8,7 @@ import com.sppan.base.common.utils.MD5Utils;
 import com.sppan.base.controller.BaseController;
 import com.sppan.base.entity.Dept;
 import com.sppan.base.service.IDeptService;
+import com.sppan.base.service.ILogService;
 import com.sppan.base.service.specification.SimpleSpecificationBuilder;
 import com.sppan.base.service.specification.SpecificationOperator;
 import com.sppan.base.common.JsonResult;
@@ -41,6 +42,8 @@ public class UserController extends BaseController {
 	private IRoleService roleService;
 	@Autowired
 	private IDeptService deptService;
+	@Autowired
+	private ILogService logService;
 
 	@RequestMapping(value = { "/", "/index" })
 	public String index() {
@@ -76,6 +79,8 @@ public class UserController extends BaseController {
 	public JsonResult edit(User user,ModelMap map){
 		try {
 			userService.saveOrUpdate(user);
+			User suser = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(suser,request,"编辑用户："+user.getNickName());
 		} catch (Exception e) {
 			return JsonResult.failure(e.getMessage());
 		}
@@ -86,6 +91,10 @@ public class UserController extends BaseController {
 	@ResponseBody
 	public JsonResult delete(@PathVariable Integer id,ModelMap map) {
 		try {
+			User user = this.userService.find(id);
+			User suser = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(suser,request,"删除用户："+user.getNickName());
+
 			userService.delete(id);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,6 +125,10 @@ public class UserController extends BaseController {
 	public JsonResult grant(@PathVariable Integer id,String[] roleIds, ModelMap map) {
 		try {
 			userService.grant(id,roleIds);
+
+			User user = this.userService.find(id);
+			User suser = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(suser,request,"给用户["+user.getNickName()+"]关联权限");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return JsonResult.failure(e.getMessage());
@@ -141,6 +154,10 @@ public class UserController extends BaseController {
 	public JsonResult grantDept(@PathVariable Integer id,Integer deptId, ModelMap map) {
 		try {
 			userService.grantDept(id,deptId);
+
+			User user = this.userService.find(id);
+			User suser = (User) SecurityUtils.getSubject().getPrincipal();
+			logService.saveLog(suser,request,"给用户["+user.getNickName()+"]关联部门");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return JsonResult.failure(e.getMessage());
