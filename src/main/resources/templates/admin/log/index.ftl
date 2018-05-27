@@ -95,6 +95,10 @@
             // detailFormatter:detailFormatter,
             //表示服务端请求
             sidePagination: "server",
+            //排序字段
+            sortName:"createTime",
+            //排序方式
+            sortOrder:"desc",
             //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder
             //设置为limit可以获取limit, offset, search, sort, order
             queryParamsType: "undefined",
