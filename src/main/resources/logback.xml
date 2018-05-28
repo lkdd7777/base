@@ -10,8 +10,8 @@
 	<property name="LOG_MAX_HISTORY" value="365" />
 	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
 	<!--应用日志文件保存路径 -->
-	<property name="LOG_APP_HOME" value="/root/filemanage/logs" />
-	<!--<property name="LOG_APP_HOME" value="f:/fdj/logs" />-->
+	<!--<property name="LOG_APP_HOME" value="/root/filemanage/logs" />-->
+	<property name="LOG_APP_HOME" value="e:/fdj/logs" />
 
 	<!--=========================== 按照每天生成日志文件：默认配置=================================== -->
 	<!-- 控制台输出 -->
