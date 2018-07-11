@@ -208,7 +208,7 @@
 
     function view(value){
         var fileUrl = "http://127.0.0.1:8080/"+value;
-        var url = "http://127.0.0.1:8012/onlinePreview?url=" + encodeURIComponent(fileUrl);
+        var url = "http://192.168.40.41:8012/onlinePreview?url=" + encodeURIComponent(fileUrl);
 
         var winHeight = window.document.documentElement.clientHeight-10;
         window.open(url, "_blank", "height=" + winHeight

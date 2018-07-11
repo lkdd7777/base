@@ -122,6 +122,6 @@ public class JsonResult implements Serializable {
 		return "JsonResult [code=" + code + ", message=" + message + ", data="
 				+ data + "]";
 	}
-	
+
 	
 }

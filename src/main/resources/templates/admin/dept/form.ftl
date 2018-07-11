@@ -90,7 +90,7 @@
     	        required: true
     	      },
     	      	description: {
-    	        required: true,
+    	        // required: true,
     	        maxlength: 40
     	      }
     	    },
