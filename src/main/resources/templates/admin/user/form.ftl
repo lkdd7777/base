@@ -129,7 +129,7 @@
     	    	userName: {
                 required: true,
                 minlength: 4,
-    	    	maxlength: 10
+    	    	maxlength: 20
     	      },
     	      	nickName: {
                 // required: true,
